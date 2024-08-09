@@ -1,0 +1,73 @@
+add = int(0)
+rule_file_path = r"D:\WorkSpace\app\id.txt"
+work_path = r"D:\WorkSpace"
+# 定义每个字段的起始值和递增步长
+start_values = {
+    "seq_id": 10000,
+    "tasuku_id": 1111111111,  # 10位
+    "toroku_renban": 333,
+    "batchno": 333,
+    "tsumi_techo": 1111111111,
+    "kumiaino": 666666,
+    "torokuno": 7777777,
+    "tsumi_techo_renban": 55555,
+    "tsumi_techo_renban_id": 55555,
+    "tsumi_techo_4keta": 5555,
+    "積立組合番号": 35555,  # 3+tsumi_techo_renban_id
+    "タスクID": 2022567890,
+    "nyuryoku_batchno": 333,
+    "nyuryoku_toroku_renban": 333 + 100,
+    "prefcd_id": 22,
+    "eigyomd_seq": 100,
+    "meigaracd": 135566,
+    "kaigocd_id": 241010,  # 6
+    "kaigocd": 241010,  # 6
+    "shokenka_sien_kanjo": 123456,
+    "jutaku_shikin_kashitsuke_kanjo": 131313,
+    "tsumi_kaisu_id": 1,
+}
+
+# 定义循环取值字段，包括固定值
+cyclic_values = {
+    "yobi1": [" "],
+    "torokummdd_id": [528, 1228],
+    "nendo_cource_id": [2413, 2412],
+    "tsumi_kaikubun_id": [4],
+    "tsumi_kaikubun": [4],
+    "tsumi_kinkubun_id": [2],
+    "tsumi_kinkubun": [2],
+    "boshu_nendo_id": [2024],
+    "boshu_nendo": [2024],
+    "boshu_kaiji_id": [3],
+    "boshu_kaiji": [3],
+    "man_shuzen_kubun_id": [3],
+    "err_zandaka_shomei_kibojiki": [0],
+    "err_kumiaino": [0],
+    "hagaki_sofu_ym": [""],
+    "err_kubun": [0, 1, 2, 3],  # "0"：正常　"1"：ワーニング　"2"：軽度　"3"：重度
+    "err_sofu_kibokakunin": [0, 1],
+    "yushiyotei_gengo": [1, 2, 3, 4],  # ''1':明治、'2'：大正、'3'：昭和、'4':平成
+    "gengo_kubun": [1, 2, 3, 4],
+    "gengo_eiji": ["M", "T", "S", "H"],  # ''M':明治、'T'：大正、'S'：昭和、'H':平成
+    "nyuryoku_shorui_flag": [1, 2],
+    # スペース（申込書および送付先指定依頼書あり） ‘1’(申込書のみ） ‘2’(送付先指定依頼書のみ）
+    "irai_naiyokubun": [1, 2, 3],
+    # ‘1’(新規登録)、‘2’(変更登録）、‘3’(送付先指定の中止）
+    "sofu_taishoshorui": [1, 2, 3],
+    # ‘1’(全ての書類)、‘2’(残高証明書及び買入計算書） 但し、依頼内容区分＝‘3’(送付先指定の中止）の場合は、スペースとする。
+    "kinriyugu_kubun": [0, 1],
+    # ‘0'：利率優遇商品申込無し 　‘1'：利率優遇商品申込有り
+    "tsumi_riyu": [1, 2, 3, 4],
+    # ‘1’(大規模修繕)、‘2’(利回り)、‘3’(機構預り)、‘4’(情報誌)
+    "err_sofu_irai_naiyokubun": [0],  # 0,1
+    "nyuryoku_tsumi_kaikubun": [4],
+    "nyuryoku_tsumi_kinkubun": [2],
+    "nyuryoku_torokummdd": [528, 1228],
+    "tsumi_kaiseq_id": [1, 2, 3, 4, 5, 6, 7, 8],  # 0~10
+    "hokankubun": [1, 2],
+    # "kaigocd": [1010],
+    "saiken_hakkohi": [20241010],
+    "saiken_mankihi": [20241010],
+    "hakko_nendo_id": [2024],
+    "ribarai_kaisuseq_id": [10],
+}
