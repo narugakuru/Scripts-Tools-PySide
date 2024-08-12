@@ -17,7 +17,7 @@ from PySide6.QtWidgets import (
     QHBoxLayout,
 )
 from PySide6.QtSql import QSqlDatabase, QSqlRelationalTableModel, QSqlRelation
-import sys
+import sys, os
 
 # 设置日志配置
 logger = logging.getLogger("GlobalLogger")
@@ -32,7 +32,8 @@ class DBInsertInterface(QWidget, Ui_DB_Insert):
         self.LineEdit_Path.setText(config["work_path"])
         self.PushButton_Select.clicked.connect(self.show_fileDialog)
         self.PushButton_Excu.clicked.connect(self.start_insertion)
-        self.Excutor = CSVtoPostgresInserter(config["db_url"])
+        self.Excutor = CSVtoPostgresInserter()
+        self.TextEdit_Log.append(self.get_files_in_directory(config["work_path"]))
 
     def show_fileDialog(self):
         folder_path = QFileDialog.getExistingDirectory(self, "选择文件夹", "")
@@ -54,3 +55,15 @@ class DBInsertInterface(QWidget, Ui_DB_Insert):
         )
         self.Excutor.start()
         # self.Excutor.join()
+
+    def get_files_in_directory(self, directory_path):
+        # 获取路径下的所有文件和文件夹
+        all_entries = os.listdir(directory_path)
+        # 过滤掉文件夹，只保留文件
+        files = [
+            entry
+            for entry in all_entries
+            if os.path.isfile(os.path.join(directory_path, entry))
+        ]
+        # 将文件列表转换为字符串，每个文件名一行
+        return "当前文件下的csv文件 \n".join(files)
