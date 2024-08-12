@@ -1,6 +1,7 @@
-from PySide6.QtWidgets import (
-    QWidget,
-)
+from PySide6.QtCore import QEasingCurve
+from PySide6.QtWidgets import QWidget, QGridLayout, QSizePolicy
+from PySide6.QtCore import QSize
+from qfluentwidgets import Flyout, FlowLayout, LineEdit, PushButton
 from view.Ui_calculator import Ui_Form
 import logging
 
@@ -23,6 +24,7 @@ class CalculatorInterface(QWidget, Ui_Form):
         self.setupUi(self)
         self.res = " "
         self.bind()
+        # self.adjustLayout()
 
     def bind(self):
         buttons = {
@@ -71,3 +73,8 @@ class CalculatorInterface(QWidget, Ui_Form):
     @update_display
     def back(self):
         self.res = self.res[:-1]
+
+    def adjustLayout(self):
+        for button in self.findChildren(PushButton):
+            sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+            button.setSizePolicy(sizePolicy)

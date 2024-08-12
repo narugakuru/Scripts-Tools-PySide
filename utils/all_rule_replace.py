@@ -3,7 +3,7 @@ import csv
 import logging
 
 # from utils.backup import backup_file_or_folder
-from utils import config
+from utils import configManager as config
 
 # 设置日志配置
 logger = logging.getLogger("GlobalLogger")
@@ -11,12 +11,13 @@ logger = logging.getLogger("GlobalLogger")
 
 class CSVProcessor:
     def __init__(self, add_value=int(0)):
-        self.start_values, self.cyclic_values = config.get_values()
+        self.start_values, self.cyclic_values = config.load_start_cyclic_values()
+
         self.add = config.load_config()["add"]
 
     def generate_data(self, row_index, column_name):
         if column_name in self.start_values:
-            return str(self.start_values[column_name] + row_index + self.add)
+            return str(int(self.start_values[column_name]) + row_index + self.add)
         elif column_name in self.cyclic_values:
             return str(
                 self.cyclic_values[column_name][

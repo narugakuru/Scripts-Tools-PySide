@@ -15,28 +15,56 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QApplication, QHBoxLayout, QSizePolicy, QSpacerItem,
-    QVBoxLayout, QWidget)
+from PySide6.QtWidgets import (QApplication, QFrame, QHBoxLayout, QHeaderView,
+    QSizePolicy, QSpacerItem, QVBoxLayout, QWidget)
 
-from qfluentwidgets import (LineEdit, PushButton, TextEdit)
+from qfluentwidgets import (LineEdit, PushButton, TableView)
 
 class Ui_Id_Replace(object):
     def setupUi(self, Id_Replace):
         if not Id_Replace.objectName():
             Id_Replace.setObjectName(u"Id_Replace")
-        Id_Replace.resize(459, 393)
-        self.verticalLayout_2 = QVBoxLayout(Id_Replace)
+        Id_Replace.resize(594, 552)
+        self.verticalLayout_3 = QVBoxLayout(Id_Replace)
+        self.verticalLayout_3.setObjectName(u"verticalLayout_3")
+        self.verticalSpacer = QSpacerItem(20, 30, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Minimum)
+
+        self.verticalLayout_3.addItem(self.verticalSpacer)
+
+        self.verticalLayout_2 = QVBoxLayout()
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
-        self.verticalSpacer = QSpacerItem(5, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Maximum)
-
-        self.verticalLayout_2.addItem(self.verticalSpacer)
-
         self.verticalLayout = QVBoxLayout()
         self.verticalLayout.setObjectName(u"verticalLayout")
-        self.TextEdit_Rules = TextEdit(Id_Replace)
-        self.TextEdit_Rules.setObjectName(u"TextEdit_Rules")
+        self.TableView_start = TableView(Id_Replace)
+        self.TableView_start.setObjectName(u"TableView_start")
+        sizePolicy = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.TableView_start.sizePolicy().hasHeightForWidth())
+        self.TableView_start.setSizePolicy(sizePolicy)
+        self.TableView_start.setFrameShadow(QFrame.Sunken)
+        self.TableView_start.setLineWidth(3)
+        self.TableView_start.setMidLineWidth(3)
+        self.TableView_start.setDragEnabled(True)
+        self.TableView_start.horizontalHeader().setCascadingSectionResizes(True)
+        self.TableView_start.horizontalHeader().setMinimumSectionSize(40)
 
-        self.verticalLayout.addWidget(self.TextEdit_Rules)
+        self.verticalLayout.addWidget(self.TableView_start)
+
+        self.TableView_cyclic = TableView(Id_Replace)
+        self.TableView_cyclic.setObjectName(u"TableView_cyclic")
+        sizePolicy.setHeightForWidth(self.TableView_cyclic.sizePolicy().hasHeightForWidth())
+        self.TableView_cyclic.setSizePolicy(sizePolicy)
+        self.TableView_cyclic.setFrameShadow(QFrame.Sunken)
+        self.TableView_cyclic.setLineWidth(3)
+        self.TableView_cyclic.setMidLineWidth(3)
+        self.TableView_cyclic.setDragEnabled(True)
+        self.TableView_cyclic.verticalHeader().setMinimumSectionSize(30)
+
+        self.verticalLayout.addWidget(self.TableView_cyclic)
+
+
+        self.verticalLayout_2.addLayout(self.verticalLayout)
 
         self.horizontalLayout = QHBoxLayout()
         self.horizontalLayout.setObjectName(u"horizontalLayout")
@@ -56,10 +84,10 @@ class Ui_Id_Replace(object):
         self.horizontalLayout.addWidget(self.PushButton_Replace)
 
 
-        self.verticalLayout.addLayout(self.horizontalLayout)
+        self.verticalLayout_2.addLayout(self.horizontalLayout)
 
 
-        self.verticalLayout_2.addLayout(self.verticalLayout)
+        self.verticalLayout_3.addLayout(self.verticalLayout_2)
 
 
         self.retranslateUi(Id_Replace)

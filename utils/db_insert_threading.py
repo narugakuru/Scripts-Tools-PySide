@@ -9,7 +9,7 @@ from datetime import datetime
 import re
 from utils.all_rule_replace import CSVProcessor
 import logging
-from utils.config import load_config
+from utils.configManager import load_config
 
 # 设置日志配置
 logger = logging.getLogger("GlobalLogger")

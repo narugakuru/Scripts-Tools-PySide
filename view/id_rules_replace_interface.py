@@ -1,17 +1,47 @@
-from json import load
-from turtle import up
-from venv import logger
-from utils.logger_setup import get_logs
-from utils import config
+from logging import config
+from utils.logger_setup import get_clear_logs
+from utils import configManager
 from PySide6.QtWidgets import QWidget, QFileDialog
 from view.Ui_id_rules_replace import Ui_Id_Replace
-from qfluentwidgets.components import FolderListDialog
+from qfluentwidgets.components import (
+    Dialog,
+    Flyout,
+    InfoBarIcon,
+    FlyoutAnimationType,
+    MessageBox,
+)
 from utils.all_rule_replace import CSVProcessor
-from utils.config import load_config, load_json_config, update_yaml
+from utils.configManager import (
+    load_config,
+    load_json_config,
+    update_yaml,
+    load_start_cyclic_values,
+)
 import logging
+from PySide6.QtWidgets import (
+    QApplication,
+    QWidget,
+    QTableView,
+    QVBoxLayout,
+    QPushButton,
+    QHBoxLayout,
+    QHeaderView,
+)
+from PySide6.QtSql import QSqlDatabase, QSqlRelationalTableModel, QSqlRelation
+import sys
+from view.common import bindDB
 
 # 设置日志配置
 logger = logging.getLogger("GlobalLogger")
+
+
+def create_connection():
+    db = QSqlDatabase.addDatabase("QSQLITE")
+    db.setDatabaseName(configManager.load_config()["sqlite_db_path"])
+    if not db.open():
+        print("Unable to open database")
+        return False
+    return True
 
 
 class IdRulesReplaceInterface(QWidget, Ui_Id_Replace):
@@ -19,19 +49,39 @@ class IdRulesReplaceInterface(QWidget, Ui_Id_Replace):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
+        self.log_text = ""
         cfg = load_config()
         self.csvProcessor = CSVProcessor()
         self.PushButton_Select.clicked.connect(self.show_fileDialog)
         self.LineEdit_Path.setText(cfg["work_path"])
         self.PushButton_Replace.clicked.connect(self.csv_replace)
-        self.TextEdit_Rules.setText(load_json_config())
+        bindDB(self)
 
     def csv_replace(self):
         path = self.LineEdit_Path.text().strip()
         logger.info("替换路径：" + path)
         self.csvProcessor.process_csv(path)
         update_yaml("work_path", path)
-        print(get_logs())
+        self.log_text = get_clear_logs()
+        print(f"List Handle{self.log_text}")
+        self.show_log()
+
+    def msg(self):
+        w = MessageBox("执行成功", self.log_text, self)
+        w.cancelButton.hide()
+        w.buttonLayout.insertStretch(1)
+        w.exec()
+
+    def show_log(self):
+        Flyout.create(
+            icon=InfoBarIcon.SUCCESS,
+            title="执行完毕",
+            content=str(self.log_text),
+            target=self.PushButton_Replace,
+            parent=self,
+            isClosable=True,
+            aniType=FlyoutAnimationType.PULL_UP,
+        )
 
     def show_fileDialog(self):
         folder_path = QFileDialog.getExistingDirectory(self, "选择文件夹", "")

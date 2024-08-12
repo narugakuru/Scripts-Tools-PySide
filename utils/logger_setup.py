@@ -30,8 +30,15 @@ logger.addHandler(list_handler)
 
 # 提供获取日志的函数
 def get_logs():
+
     return "\n".join(list_handler.get_logs())
 
 
 def clear_logs():
     list_handler.clear_logs()
+
+
+def get_clear_logs():
+    msg = get_logs()
+    clear_logs()
+    return msg

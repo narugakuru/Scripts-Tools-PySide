@@ -2,12 +2,22 @@ import csv
 from tracemalloc import start
 from qfluentwidgets.components import dialog_box, FolderListDialog
 from PySide6.QtWidgets import QWidget, QFileDialog
-from utils.config import load_config
+from utils.configManager import load_config, load_start_cyclic_values
 from view.Ui_db_insert import Ui_DB_Insert
 from utils.db_insert_threading import CSVtoPostgresInserter
 import logging
 import utils.logger_setup as log
 import threading
+from PySide6.QtWidgets import (
+    QApplication,
+    QWidget,
+    QTableView,
+    QVBoxLayout,
+    QPushButton,
+    QHBoxLayout,
+)
+from PySide6.QtSql import QSqlDatabase, QSqlRelationalTableModel, QSqlRelation
+import sys
 
 # 设置日志配置
 logger = logging.getLogger("GlobalLogger")

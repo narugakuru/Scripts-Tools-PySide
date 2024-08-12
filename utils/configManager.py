@@ -1,8 +1,8 @@
 import os
 import logging
 import yaml
-from collections import OrderedDict
 
+from utils import sqliteManager
 import json
 
 logger = logging.getLogger("GlobalLogger")
@@ -92,3 +92,35 @@ def get_values():
     cyclic_values = config.get("cyclic_values", {})
 
     return start_values, cyclic_values
+
+
+def load_start_cyclic_values():
+    db = sqliteManager.SQLiteManager()
+    start_values = db.fetch_all("start_values")
+    cyclic_values = db.fetch_all("cyclic_values")
+    # Convert lists to dictionaries
+    start_values = {item[0]: item[1] for item in start_values}
+    cyclic_values = {
+        item[0]: eval(item[1]) for item in cyclic_values
+    }  # Convert string to list
+
+    return start_values, cyclic_values
+
+
+class ConfigManager:
+    def __init__(self):
+        db = sqliteManager.SQLiteManager()
+        self.start_values = db.fetch_all("start_values")
+        self.cyclic_values = db.fetch_all("cyclic_values")
+
+    def load_start_cyclic_values(self):
+        db = sqliteManager.SQLiteManager()
+        self.start_values = db.fetch_all("start_values")
+        self.cyclic_values = db.fetch_all("cyclic_values")
+        # Convert lists to dictionaries
+        start_values = {item[0]: item[1] for item in self.start_values}
+        cyclic_values = {
+            item[0]: eval(item[1]) for item in self.cyclic_values
+        }  # Convert string to list
+
+        return start_values, cyclic_values

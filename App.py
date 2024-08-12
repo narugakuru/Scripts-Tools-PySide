@@ -7,7 +7,7 @@ from view.calculator_interface import CalculatorInterface
 from view.id_rules_replace_interface import IdRulesReplaceInterface
 from view.db_insert_interface import DBInsertInterface
 import os
-import utils.config as config
+import utils.configManager as config
 import logging
 
 # 设置日志配置
@@ -17,9 +17,10 @@ logger = logging.getLogger("GlobalLogger")
 class MyWindow(SplitFluentWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Fluent Split Demo")
+        self.setWindowTitle("IT Tools")
         self.setWindowIcon(QIcon(":/qfluentwidgets/images/logo.png"))
-        self.set_window()
+        # self.set_window()
+        self.showMaximized()
 
         self.calculatorInterface = CalculatorInterface()
         self.idRulesReplaceInterface = IdRulesReplaceInterface()
@@ -30,9 +31,10 @@ class MyWindow(SplitFluentWindow):
         self.addSubInterface(self.calculatorInterface, FluentIcon.ACCEPT, "Calculator")
         self.addSubInterface(self.DBInsertInterface, FluentIcon.ADD_TO, "DBInsert")
 
-    def set_window(self, ratio=0.7):
+    def set_window(self, ratio=1):
         # 获取屏幕大小
         screen = QApplication.primaryScreen()
+
         screen_rect = screen.availableGeometry()
 
         # 计算窗口大小为屏幕的一半
