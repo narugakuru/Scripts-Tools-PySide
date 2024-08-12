@@ -25,8 +25,8 @@ class CSVtoPostgresInserter:
         self.db_url = load_config()["db_url"]
         self.engine = create_engine(self.db_url)
         self.Session = sessionmaker(bind=self.engine)
-        # 文件list
-        self.csv_folder = None
+        self.lock = threading.Lock()
+        self.csv_path = None
         logger.info("CSVtoPostgresInserter 初始化成功.")
 
     def filter_latest_csv_files(self):
@@ -59,7 +59,7 @@ class CSVtoPostgresInserter:
             # 过滤文件
             csv_list = self.filter_latest_csv_files()
             for filename in csv_list:
-                file_path = os.path.join(self.csv_folder, filename)
+                file_path = os.path.join(self.csv_path, filename)
                 df = pd.read_csv(file_path, dtype=str)
                 table_name = re.match(r"^(.*?)(?:_\d{8}\d{4})?\.csv$", filename).group(
                     1
@@ -102,18 +102,20 @@ class CSVtoPostgresInserter:
         finally:
             session.close()
 
+    def start_insertion(self):
+        with self.lock:
+            self.insert_csv_to_postgresql_with_transaction()
+
     def repalce_csv_insert2db(self, csv_path):
         """输入一个文件夹/文件路径，先对数据做批量处理，再批量插入CSV数据到PostgreSQL数据库"""
         csvProcessor = CSVProcessor()
-        self.csv_folder = csvProcessor.process_csv(csv_path)
+        self.csv_path = csvProcessor.process_csv(csv_path)
         logger.info("CSV数据处理完成,开始连接数据库")
-        if self.Session:
-            self.insert_csv_to_postgresql_with_transaction()
-            logger.info("数据插入完成")
-            return True
-        else:
-            logger.info("数据库连接失败")
-            return False
+        self.insert_csv_to_postgresql_with_transaction()
+
+    def start_repalce_csv_insert2db(self, csv_path):
+        with self.lock:
+            self.repalce_csv_insert2db(csv_path)
 
 
 def insert_data(csv_path):
