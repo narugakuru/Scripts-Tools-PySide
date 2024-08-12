@@ -1,4 +1,4 @@
-import os
+import os, sys
 import logging
 import yaml
 
@@ -12,6 +12,18 @@ ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 CONFIG_DIR = os.path.dirname(os.path.abspath(__file__))
 # 构造 config.yaml 的路径
 CONFIG_FILE_PATH = os.path.join(ROOT_DIR, "cfg.yaml")
+
+# 获取临时目录路径
+if getattr(sys, "frozen", False):
+    # 如果是打包后的执行文件
+    bundle_dir = sys._MEIPASS
+else:
+    # 如果是源代码运行
+    bundle_dir = os.path.abspath(os.path.dirname(__file__))
+
+# 加载配置文件和数据库文件
+CONFIG_PATH = os.path.join(bundle_dir, "cfg.yaml")
+SQLITE_DB_PATH = os.path.join(bundle_dir, "rePlaceRule.db")
 
 
 def load_config():
@@ -109,9 +121,9 @@ def load_start_cyclic_values():
 
 class ConfigManager:
     def __init__(self):
-        db = sqliteManager.SQLiteManager()
-        self.start_values = db.fetch_all("start_values")
-        self.cyclic_values = db.fetch_all("cyclic_values")
+        self.db = sqliteManager.SQLiteManager()
+        self.start_values = self.db.fetch_all("start_values")
+        self.cyclic_values = self.db.fetch_all("cyclic_values")
 
     def load_start_cyclic_values(self):
         db = sqliteManager.SQLiteManager()
@@ -124,3 +136,40 @@ class ConfigManager:
         }  # Convert string to list
 
         return start_values, cyclic_values
+import yaml
+import sqlite3
+import os
+
+class Config:
+    _instance = None
+
+    def __new__(cls, *args, **kwargs):
+        if cls._instance is None:
+            cls._instance = super(Config, cls).__new__(cls, *args, **kwargs)
+            cls._instance._initialize(*args, **kwargs)
+        return cls._instance
+
+    def _initialize(self, cfg_file='cfg.yaml', db_file='rule.db'):
+        self.cfg_file = cfg_file
+        self.db_file = db_file
+        self._load_config()
+        self._load_database()
+
+    def _load_config(self):
+        with open(self.cfg_file, 'r') as f:
+            self.config_data = yaml.safe_load(f)
+
+    def _load_database(self):
+        self.db_conn = sqlite3.connect(self.db_file)
+        self.db_cursor = self.db_conn.cursor()
+
+    def get_config_value(self, key):
+        return self.config_data.get(key)
+
+    def query_db(self, query, params=()):
+        self.db_cursor.execute(query, params)
+        return self.db_cursor.fetchall()
+
+    def __del__(self):
+        if hasattr(self, 'db_conn'):
+            self.db_conn.close()

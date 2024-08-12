@@ -6,12 +6,13 @@ from qfluentwidgets import SplitFluentWindow, FluentIcon
 from view.calculator_interface import CalculatorInterface
 from view.id_rules_replace_interface import IdRulesReplaceInterface
 from view.db_insert_interface import DBInsertInterface
-import os
 import utils.configManager as config
 import logging
 
 # 设置日志配置
 logger = logging.getLogger("GlobalLogger")
+import sys
+import os
 
 
 class MyWindow(SplitFluentWindow):
