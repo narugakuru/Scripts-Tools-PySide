@@ -12,6 +12,14 @@ nuitka --mingw64 --show-progress --standalone --enable-plugin=pyside6 --onefile 
 
 nuitka --mingw64 --show-progress --standalone --enable-plugin=pyside6 --onefile --lto=yes --remove-output --no-cache app.py
 
+
+nuitka --mingw64 --show-progress --standalone --enable-plugin=pyside6 --onefile --remove-output --lto -optimize=2 app.py 
+
+nuitka --mingw64 --show-progress --standalone --enable-plugin=pyside6 --plugin-enable=pandas --onefile --remove-output --lto --optimize=2 app.py
+使用peewee， 排除sqlalchemy 
+
+nuitka --mingw64 --show-progress --standalone --enable-plugin=pyside6 --plugin-enable=pandas --exclude-package=sqlalchemy --onefile --remove-output --lto --optimize=2 app.py
+
 --mingw64 #默认为已经安装的vs2017去编译，否则就按指定的比如mingw(官方建议)
 --standalone 独立环境，这是必须的(否则拷给别人无法使用)
 --windows-disable-console 没有CMD控制窗口

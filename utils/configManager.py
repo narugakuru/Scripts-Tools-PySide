@@ -1,7 +1,7 @@
 import os, sys
 import logging
 import yaml
-
+import sqlite3
 from utils import sqliteManager
 import json
 
@@ -15,15 +15,21 @@ CONFIG_FILE_PATH = os.path.join(ROOT_DIR, "cfg.yaml")
 
 # 获取临时目录路径
 if getattr(sys, "frozen", False):
-    # 如果是打包后的执行文件
-    bundle_dir = sys._MEIPASS
+    # 如果是打包后的执行文件，获取临时目录
+    # ROOT_DIR = sys._MEIPASS
+    # 获取打包后的可执行文件所在的目录
+    ROOT_DIR = os.path.dirname(sys.executable)
 else:
     # 如果是源代码运行
-    bundle_dir = os.path.abspath(os.path.dirname(__file__))
+    ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 
 # 加载配置文件和数据库文件
-CONFIG_PATH = os.path.join(bundle_dir, "cfg.yaml")
-SQLITE_DB_PATH = os.path.join(bundle_dir, "rePlaceRule.db")
+CONFIG_PATH = os.path.join(ROOT_DIR, "cfg.yaml")
+SQLITE_DB_PATH = os.path.join(ROOT_DIR, "rule.db")
+
+logger.info("ConfigManager loaded")
+logger.info("CONFIG_PATH:" + CONFIG_PATH)
+logger.info("SQLITE_DB_PATH:" + SQLITE_DB_PATH)
 
 
 def load_config():
@@ -107,7 +113,7 @@ def get_values():
 
 
 def load_start_cyclic_values():
-    db = sqliteManager.SQLiteManager()
+    db = sqliteManager.SQLiteManager(SQLITE_DB_PATH)
     start_values = db.fetch_all("start_values")
     cyclic_values = db.fetch_all("cyclic_values")
     # Convert lists to dictionaries
@@ -121,14 +127,16 @@ def load_start_cyclic_values():
 
 class ConfigManager:
     def __init__(self):
-        self.db = sqliteManager.SQLiteManager()
+        # 加载配置文件和数据库文件
+        self.CONFIG_PATH = os.path.join(ROOT_DIR, "cfg.yaml")
+        self.SQLITE_DB_PATH = os.path.join(ROOT_DIR, "rule.db")
+        self.db = sqliteManager.SQLiteManager(self.SQLITE_DB_PATH)
         self.start_values = self.db.fetch_all("start_values")
         self.cyclic_values = self.db.fetch_all("cyclic_values")
 
     def load_start_cyclic_values(self):
-        db = sqliteManager.SQLiteManager()
-        self.start_values = db.fetch_all("start_values")
-        self.cyclic_values = db.fetch_all("cyclic_values")
+        self.start_values = self.db.fetch_all("start_values")
+        self.cyclic_values = self.db.fetch_all("cyclic_values")
         # Convert lists to dictionaries
         start_values = {item[0]: item[1] for item in self.start_values}
         cyclic_values = {
@@ -136,9 +144,7 @@ class ConfigManager:
         }  # Convert string to list
 
         return start_values, cyclic_values
-import yaml
-import sqlite3
-import os
+
 
 class Config:
     _instance = None
@@ -149,14 +155,14 @@ class Config:
             cls._instance._initialize(*args, **kwargs)
         return cls._instance
 
-    def _initialize(self, cfg_file='cfg.yaml', db_file='rule.db'):
+    def _initialize(self, cfg_file="cfg.yaml", db_file="rule.db"):
         self.cfg_file = cfg_file
         self.db_file = db_file
         self._load_config()
         self._load_database()
 
     def _load_config(self):
-        with open(self.cfg_file, 'r') as f:
+        with open(self.cfg_file, "r") as f:
             self.config_data = yaml.safe_load(f)
 
     def _load_database(self):
@@ -171,5 +177,5 @@ class Config:
         return self.db_cursor.fetchall()
 
     def __del__(self):
-        if hasattr(self, 'db_conn'):
+        if hasattr(self, "db_conn"):
             self.db_conn.close()

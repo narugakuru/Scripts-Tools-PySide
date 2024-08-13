@@ -1,4 +1,4 @@
-import csv
+import imp
 import os
 import pandas as pd
 from sqlalchemy import create_engine, text
@@ -9,7 +9,7 @@ from datetime import datetime
 import re
 from utils.all_rule_replace import CSVProcessor
 import logging
-from utils.configManager import load_config
+from utils.config_setup import ConfigManager
 
 # 设置日志配置
 logger = logging.getLogger("GlobalLogger")
@@ -21,8 +21,9 @@ class CSVtoPostgresInserter:
         db_url=None,
         id_replace=True,
     ):
+        config = ConfigManager()
         self.csv_folder = None
-        self.db_url = load_config()["db_url"]
+        self.db_url = config.config_data["db_url"]
         self.engine = create_engine(self.db_url)
         self.Session = sessionmaker(bind=self.engine)
         # 文件list

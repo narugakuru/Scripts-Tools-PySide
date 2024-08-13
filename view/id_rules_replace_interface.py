@@ -1,6 +1,5 @@
 from logging import config
 from utils.logger_setup import get_clear_logs
-from utils import configManager
 from PySide6.QtWidgets import QWidget, QFileDialog
 from view.Ui_id_rules_replace import Ui_Id_Replace
 from qfluentwidgets.components import (
@@ -11,12 +10,7 @@ from qfluentwidgets.components import (
     MessageBox,
 )
 from utils.all_rule_replace import CSVProcessor
-from utils.configManager import (
-    load_config,
-    load_json_config,
-    update_yaml,
-    load_start_cyclic_values,
-)
+from utils.config_setup import ConfigManager
 import logging
 from PySide6.QtWidgets import (
     QApplication,
@@ -37,7 +31,7 @@ logger = logging.getLogger("GlobalLogger")
 
 def create_connection():
     db = QSqlDatabase.addDatabase("QSQLITE")
-    db.setDatabaseName(configManager.load_config()["sqlite_db_path"])
+    db.setDatabaseName(ConfigManager().SQLITE_DB_PATH)
     if not db.open():
         print("Unable to open database")
         return False
@@ -50,7 +44,8 @@ class IdRulesReplaceInterface(QWidget, Ui_Id_Replace):
         super().__init__()
         self.setupUi(self)
         self.log_text = ""
-        cfg = load_config()
+        self.configManager = ConfigManager()
+        cfg = self.configManager.config_data
         self.csvProcessor = CSVProcessor()
         self.PushButton_Select.clicked.connect(self.show_fileDialog)
         self.LineEdit_Path.setText(cfg["work_path"])
@@ -61,7 +56,7 @@ class IdRulesReplaceInterface(QWidget, Ui_Id_Replace):
         path = self.LineEdit_Path.text().strip()
         logger.info("替换路径：" + path)
         self.csvProcessor.process_csv(path)
-        update_yaml("work_path", path)
+        self.configManager.update_yaml("work_path", path)
         self.log_text = get_clear_logs()
         print(f"List Handle{self.log_text}")
         self.show_log()

@@ -3,10 +3,11 @@ from PySide6.QtWidgets import QApplication
 from PySide6.QtCore import Qt, QSize
 from PySide6.QtGui import QIcon
 from qfluentwidgets import SplitFluentWindow, FluentIcon
+from utils import config_setup
 from view.calculator_interface import CalculatorInterface
 from view.id_rules_replace_interface import IdRulesReplaceInterface
 from view.db_insert_interface import DBInsertInterface
-import utils.configManager as config
+from utils import configManager
 import logging
 
 # 设置日志配置
@@ -54,6 +55,8 @@ class MyWindow(SplitFluentWindow):
 
 
 if __name__ == "__main__":
+    cfg = config_setup.ConfigManager()
+    print("配置文件路径：" + cfg.CONFIG_FILE_PATH)
     QApplication.setHighDpiScaleFactorRoundingPolicy(
         Qt.HighDpiScaleFactorRoundingPolicy.Ceil
     )

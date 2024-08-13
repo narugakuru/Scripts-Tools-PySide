@@ -2,6 +2,11 @@ VSCode_D2L/2022-Machine-Learning-Specialization
 VSCode_D2L/pytorch-d2l
 ViT/
 
+# FLuent
+app.build
+app.dist
+.idea
+
 # 数据包
 *.rar
 *.zip

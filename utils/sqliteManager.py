@@ -1,12 +1,14 @@
 import sqlite3
 import json
-from utils import configManager
+
+# from utils.config_setup import ConfigManager
 
 
 class SQLiteManager:
-    def __init__(self, db_path=None):
+    def __init__(self, db_path):
         """初始化 SQLiteManager，连接到指定的 SQLite 数据库文件。"""
-        self.db_path = configManager.load_config()["sqlite_db_path"]
+        # self.db_path = ConfigManager().SQLITE_DB_PATH
+        self.db_path = db_path
         self.connection = None
         self.cursor = None
 

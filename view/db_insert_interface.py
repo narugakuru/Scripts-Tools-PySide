@@ -2,20 +2,13 @@ import csv
 from tracemalloc import start
 from qfluentwidgets.components import dialog_box, FolderListDialog
 from PySide6.QtWidgets import QWidget, QFileDialog
-from utils.configManager import load_config, load_start_cyclic_values
+from utils.config_setup import ConfigManager
 from view.Ui_db_insert import Ui_DB_Insert
 from utils.db_insert_threading import CSVtoPostgresInserter
 import logging
 import utils.logger_setup as log
 import threading
-from PySide6.QtWidgets import (
-    QApplication,
-    QWidget,
-    QTableView,
-    QVBoxLayout,
-    QPushButton,
-    QHBoxLayout,
-)
+from PySide6.QtWidgets import QWidget
 from PySide6.QtSql import QSqlDatabase, QSqlRelationalTableModel, QSqlRelation
 import sys, os
 from concurrent.futures import ThreadPoolExecutor
@@ -29,8 +22,8 @@ class DBInsertInterface(QWidget, Ui_DB_Insert):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
-        config = load_config()
-        self.csv_path = config["work_path"]
+        config = ConfigManager()
+        self.csv_path = config.config_data["work_path"]
         self.LineEdit_Path.setText(self.csv_path)
         self.PushButton_Select.clicked.connect(self.show_fileDialog)
         self.PushButton_Excu.clicked.connect(self.start_insertion)
