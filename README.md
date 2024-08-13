@@ -1,16 +1,15 @@
+
+
 app.exe启动
+
 resource存放配置文件和数据库，在cfg.yaml里修改数据库连接
-改进：
 
-轻量级peewee替换了SQLAlschmy
-csv替换了pandas和numpy进一步缩小软件体积
-完善DB异常处理
-使用单例模式重构Config
-介绍：
+### 介绍：
 
-Pyside6+Fluent Widget组件制作的界面
-字段替换功能，替换指定文件夹下面所有csv文件的字段，替换后的文件放在目标文件夹的replace下，主要支持两类替换，通过index来控制id递增
-批量插入数据库，读取文件夹下所有csv文件，文件名对应数据库表名，表存在则一键插入
-TodoList：
+1. Pyside6+Fluent Widget组件制作的界面
+2. 字段替换功能，替换指定文件夹下面所有csv文件的字段，替换后的文件放在目标文件夹的replace下，主要支持两类替换，通过index来控制id递增
+3. 批量插入数据库，读取文件夹下所有csv文件，文件名对应数据库表名，表存在则一键插入
+
+### TodoList：
 
 现在的需求还没有新增功能的想法，实际工作有需要了再抽空摸鱼加功能
