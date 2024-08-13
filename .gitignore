@@ -5,6 +5,7 @@ ViT/
 # FLuent
 app.build
 app.dist
+app.onefile-build
 .idea
 app
 dist

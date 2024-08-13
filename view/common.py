@@ -1,10 +1,5 @@
-from utils.logger_setup import get_clear_logs
-
-# from backup import configManager
-from PySide6.QtWidgets import QWidget, QFileDialog
-from view.Ui_id_rules_replace import Ui_Id_Replace
-from utils.all_rule_replace import CSVProcessor
-import logging
+from math import log
+from venv import logger
 from utils.config_setup import ConfigManager
 from PySide6.QtWidgets import (
     QHeaderView,
@@ -13,6 +8,7 @@ from PySide6.QtSql import QSqlDatabase, QSqlRelationalTableModel, QSqlRelation
 
 
 def bindDB(self):
+    print("绑定数据库")
     db = QSqlDatabase.addDatabase("QSQLITE")
     db.setDatabaseName(ConfigManager().SQLITE_DB_PATH)
     # 绑定数据库

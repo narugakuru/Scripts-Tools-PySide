@@ -3,14 +3,17 @@ from PySide6.QtCore import Qt, QSize
 from PySide6.QtGui import QIcon
 from qfluentwidgets import SplitFluentWindow, FluentIcon
 from utils import config_setup
-from view.calculator_interface import CalculatorInterface
+
+# from view.calculator_interface import CalculatorInterface
 from view.id_rules_replace_interface import IdRulesReplaceInterface
 from view.db_insert_interface import DBInsertInterface
 import logging
+import os
+
+os.environ["NUMPY_EXPERIMENTAL"] = "0"
 
 # 设置日志配置
 logger = logging.getLogger("GlobalLogger")
-import sys, os
 
 
 class MyWindow(SplitFluentWindow):
@@ -21,7 +24,7 @@ class MyWindow(SplitFluentWindow):
         # self.set_window()
         self.showMaximized()
 
-        self.calculatorInterface = CalculatorInterface()
+        # self.calculatorInterface = CalculatorInterface()
         self.idRulesReplaceInterface = IdRulesReplaceInterface()
         self.DBInsertInterface = DBInsertInterface()
         self.addSubInterface(

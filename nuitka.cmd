@@ -29,8 +29,16 @@ nuitka --standalone --windows-disable-console --mingw64 --nofollow-imports --sho
 --include-module=PySide6.QtWidgets --include-module=PySide6.QtGui --include-module=PySide6.QtCore \
 
 python -m nuitka --mingw64 --standalone --enable-plugin=pyside6 --show-progress --output-dir=dist --follow-imports --assume-yes-for-downloads --include-qt-plugins=sensible,qml,styles app.py
-# 不打包工具库pandas
-python -m nuitka --mingw64 --lto=yes --standalone --enable-plugin=pyside6 --show-progress --output-dir=app --follow-imports --assume-yes-for-downloads --include-qt-plugins=sensible,qml,styles --nofollow-import-to=scipy app.py
+
+python -m nuitka --output-dir=app --mingw64 --lto=yes --standalone --enable-plugin=pyside6 --show-progress --follow-imports --assume-yes-for-downloads --include-qt-plugins=sensible,qml,styles,sqldrivers --nofollow-import-to=scipy app.py
+
+单个文件
+python -m nuitka --onefile --output-dir=app --mingw64 --lto=yes --standalone --enable-plugin=pyside6 --show-progress --follow-imports --assume-yes-for-downloads --include-qt-plugins=sensible,qml,styles,sqldrivers --nofollow-import-to=scipy app.py
+
+nuitka --standalone --remove-output --exclude-module=pandas.io.clipboard,pandas.plotting app.py
+
+python -m nuitka --onefile --output-dir=app --mingw64 --lto=yes --standalone --enable-plugin=pyside6 --show-progress --follow-imports --assume-yes-for-downloads --include-qt-plugins=sensible,qml,styles,sqldrivers app.py
+
 
 --include-package-data=PySide6
 --follow-import-to=need

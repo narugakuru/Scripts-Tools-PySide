@@ -1,10 +1,8 @@
-from logging import config
-from traceback import print_tb
+from calendar import c
 from utils.logger_setup import get_clear_logs
 from PySide6.QtWidgets import QWidget, QFileDialog
 from view.Ui_id_rules_replace import Ui_Id_Replace
 from qfluentwidgets.components import (
-    Dialog,
     Flyout,
     InfoBarIcon,
     FlyoutAnimationType,
@@ -13,31 +11,12 @@ from qfluentwidgets.components import (
 from utils.all_rule_replace import CSVProcessor
 from utils.config_setup import ConfigManager
 import logging
-from PySide6.QtWidgets import (
-    QApplication,
-    QWidget,
-    QTableView,
-    QVBoxLayout,
-    QPushButton,
-    QHBoxLayout,
-    QHeaderView,
-)
-from PySide6.QtSql import QSqlDatabase, QSqlRelationalTableModel, QSqlRelation
-import sys
+from PySide6.QtWidgets import QWidget
+from PySide6.QtSql import QSqlDatabase
 from view.common import bindDB
 
 # 设置日志配置
 logger = logging.getLogger("GlobalLogger")
-
-
-def create_connection():
-    db = QSqlDatabase.addDatabase("QSQLITE")
-    db.setDatabaseName(ConfigManager().SQLITE_DB_PATH)
-    if not db.open():
-        print("Unable to open database")
-        return False
-    print("SQLITE is open")
-    return True
 
 
 class IdRulesReplaceInterface(QWidget, Ui_Id_Replace):
@@ -52,7 +31,18 @@ class IdRulesReplaceInterface(QWidget, Ui_Id_Replace):
         self.PushButton_Select.clicked.connect(self.show_fileDialog)
         self.LineEdit_Path.setText(cfg["work_path"])
         self.PushButton_Replace.clicked.connect(self.csv_replace)
+        self.create_connection()
         bindDB(self)
+
+    def create_connection(self):
+        print("create_connection")
+        self.db = QSqlDatabase.addDatabase("QSQLITE")
+        self.db.setDatabaseName(ConfigManager().SQLITE_DB_PATH)
+        if not self.db.open():
+            print("Unable to open database")
+            return False
+        print("SQLITE is open")
+        return True
 
     def csv_replace(self):
         path = self.LineEdit_Path.text().strip()
