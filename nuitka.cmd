@@ -18,8 +18,23 @@ nuitka --mingw64 --show-progress --standalone --enable-plugin=pyside6 --onefile 
 nuitka --mingw64 --show-progress --standalone --enable-plugin=pyside6 --plugin-enable=pandas --onefile --remove-output --lto --optimize=2 app.py
 使用peewee， 排除sqlalchemy 
 
-nuitka --mingw64 --show-progress --standalone --enable-plugin=pyside6 --plugin-enable=pandas --exclude-package=sqlalchemy --onefile --remove-output --lto --optimize=2 app.py
+nuitka --mingw64 --show-progress --standalone --enable-plugin=pyside6 --exclude-package=sqlalchemy --onefile --remove-output --lto --optimize=2 app.py
 
+nuitka --mingw64 --show-progress --standalone --enable-plugin=pyside6 --lto=yes app.py
+
+nuitka --mingw64 --show-progress --standalone --enable-plugin=pyside6 app.py
+
+nuitka --standalone --windows-disable-console --mingw64 --nofollow-imports --show-memory --show-progress --plugin-enable=qt-plugins --include-qt-plugins=sensible,styles --follow-import-to=need --output-dir=o 你的.py
+
+--include-module=PySide6.QtWidgets --include-module=PySide6.QtGui --include-module=PySide6.QtCore \
+
+python -m nuitka --mingw64 --standalone --enable-plugin=pyside6 --show-progress --output-dir=dist --follow-imports --assume-yes-for-downloads --include-qt-plugins=sensible,qml,styles app.py
+# 不打包工具库pandas
+python -m nuitka --mingw64 --lto=yes --standalone --enable-plugin=pyside6 --show-progress --output-dir=app --follow-imports --assume-yes-for-downloads --include-qt-plugins=sensible,qml,styles --nofollow-import-to=scipy app.py
+
+--include-package-data=PySide6
+--follow-import-to=need
+--include-qt-plugins=sensible
 --mingw64 #默认为已经安装的vs2017去编译，否则就按指定的比如mingw(官方建议)
 --standalone 独立环境，这是必须的(否则拷给别人无法使用)
 --windows-disable-console 没有CMD控制窗口

@@ -22,10 +22,17 @@ class ListHandler(logging.Handler):
 # 设置全局 logger
 logger = logging.getLogger("GlobalLogger")
 logger.setLevel(logging.DEBUG)
+
+# Pyside界面
 list_handler = ListHandler()
 formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
 list_handler.setFormatter(formatter)
 logger.addHandler(list_handler)
+
+# 控制台
+console_handler = logging.StreamHandler()
+console_handler.setFormatter(formatter)
+logger.addHandler(console_handler)
 
 
 # 提供获取日志的函数

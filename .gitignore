@@ -6,6 +6,9 @@ ViT/
 app.build
 app.dist
 .idea
+app
+dist
+build
 
 # 数据包
 *.rar

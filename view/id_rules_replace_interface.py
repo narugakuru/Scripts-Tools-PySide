@@ -1,4 +1,5 @@
 from logging import config
+from traceback import print_tb
 from utils.logger_setup import get_clear_logs
 from PySide6.QtWidgets import QWidget, QFileDialog
 from view.Ui_id_rules_replace import Ui_Id_Replace
@@ -35,6 +36,7 @@ def create_connection():
     if not db.open():
         print("Unable to open database")
         return False
+    print("SQLITE is open")
     return True
 
 

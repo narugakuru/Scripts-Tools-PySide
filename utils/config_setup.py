@@ -21,17 +21,23 @@ class ConfigManager:
 
     def _initialize(self, cfg_file="cfg.yaml", db_file="rule.db"):
         # self.ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-
+        RESOURCE = "resource"
         if getattr(sys, "frozen", False):
+
             self.ROOT_DIR = os.path.dirname(sys.executable)
+            print("exe模型！:" + self.ROOT_DIR)
         else:
+
             self.ROOT_DIR = os.path.abspath(
                 os.path.join(os.path.dirname(__file__), "..")
             )
-
+            print("py模式" + self.ROOT_DIR)
+        self.ROOT_DIR = os.path.realpath(self.ROOT_DIR)
+        print("当前real路径：" + self.ROOT_DIR)
         self.CONFIG_DIR = os.path.dirname(os.path.abspath(__file__))
-        self.CONFIG_FILE_PATH = os.path.join(self.ROOT_DIR, cfg_file)
-        self.SQLITE_DB_PATH = os.path.join(self.ROOT_DIR, db_file)
+
+        self.CONFIG_FILE_PATH = os.path.join(self.ROOT_DIR, "resource", cfg_file)
+        self.SQLITE_DB_PATH = os.path.join(self.ROOT_DIR, "resource", db_file)
 
         self._load_config()
         self._load_database()
@@ -80,6 +86,7 @@ class ConfigManager:
                 sort_keys=False,
             )
         logger.info(f"字段 '{field}' 已更新为 '{new_value}'")
+        self._load_config()
 
     def save_config(self):
         with open(self.CONFIG_FILE_PATH, "w", encoding="utf-8") as file:
@@ -90,6 +97,7 @@ class ConfigManager:
                 sort_keys=False,
                 default_flow_style=False,
             )
+        self._load_config()
 
     def load_json_config(self):
         json_str = json.dumps(self.config_data, separators=(",", ":"))

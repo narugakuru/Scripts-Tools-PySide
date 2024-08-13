@@ -27,7 +27,7 @@ class MyWindow(SplitFluentWindow):
         self.addSubInterface(
             self.idRulesReplaceInterface, FluentIcon.EDIT, "IdRulesReplace"
         )
-        self.addSubInterface(self.calculatorInterface, FluentIcon.ACCEPT, "Calculator")
+        # self.addSubInterface(self.calculatorInterface, FluentIcon.ACCEPT, "Calculator")
         self.addSubInterface(self.DBInsertInterface, FluentIcon.ADD_TO, "DBInsert")
 
     def set_window(self, ratio=1):
@@ -54,6 +54,7 @@ class MyWindow(SplitFluentWindow):
 if __name__ == "__main__":
     cfg = config_setup.ConfigManager()
     print("配置文件路径：" + cfg.CONFIG_FILE_PATH)
+    print("数据库路径: " + cfg.SQLITE_DB_PATH)
     QApplication.setHighDpiScaleFactorRoundingPolicy(
         Qt.HighDpiScaleFactorRoundingPolicy.Ceil
     )
