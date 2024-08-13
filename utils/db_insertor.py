@@ -11,39 +11,46 @@ from utils.config_setup import ConfigManager  # 确保这个模块在你的环�
 logger = logging.getLogger("GlobalLogger")
 logging.basicConfig(level=logging.INFO)
 
-# 定义数据库连接参数
-db_url = "postgresql+psycopg2://postgres:rootroot@localhost:5432/postgres?options=-csearch_path=takusai_tanntai"
-
-# 解析数据库 URL
-pattern = re.compile(
-    r"postgresql\+psycopg2://(?P<user>[^:]+):(?P<password>[^@]+)@(?P<host>[^:]+):(?P<port>\d+)/(?P<database>[^\?]+)\?options=-csearch_path=(?P<schema>[^\&]+)"
-)
-match = pattern.match(db_url)
-
-if match:
-    db_config = match.groupdict()
-else:
-    raise ValueError("Invalid database URL")
-
-# 创建数据库实例
-db = PostgresqlDatabase(
-    db_config["database"],
-    user=db_config["user"],
-    password=db_config["password"],
-    host=db_config["host"],
-    port=int(db_config["port"]),
-    options=f"-c search_path={db_config['schema']}",
-)
-
-# 连接数据库
-db.connect()
-
 
 class CSVtoPostgresInserter:
     def __init__(self, id_replace=True):
         self.csv_folder = None
         self.id_replace = id_replace
+        self.db = None
+        self.connect()
         logger.info("CSVtoPostgresInserter 初始化成功.")
+
+    def connect(self):
+        # 定义数据库连接参数
+        db_url = "postgresql+psycopg2://postgres:rootroot@localhost:5432/postgres?options=-csearch_path=takusai_tanntai"
+
+        # 解析数据库 URL
+        pattern = re.compile(
+            r"postgresql\+psycopg2://(?P<user>[^:]+):(?P<password>[^@]+)@(?P<host>[^:]+):(?P<port>\d+)/(?P<database>[^\?]+)\?options=-csearch_path=(?P<schema>[^\&]+)"
+        )
+        match = pattern.match(db_url)
+
+        if match:
+            db_config = match.groupdict()
+        else:
+            raise ValueError("Invalid database URL")
+        try:
+            # 创建数据库实例
+            self.db = PostgresqlDatabase(
+                db_config["database"],
+                user=db_config["user"],
+                password=db_config["password"],
+                host=db_config["host"],
+                port=int(db_config["port"]),
+                options=f"-c search_path={db_config['schema']}",
+            )
+
+            # 连接数据库
+            self.db.connect()
+            logger.info("Connected to the database.")
+        except Exception as e:
+            logger.error(f"Failed to connect to the database: {e}")
+            raise
 
     def filter_latest_csv_files(self):
         latest_files = {}
