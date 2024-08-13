@@ -40,28 +40,43 @@ class CSVProcessor:
     def process_csv_file(self, input_file, output_file):
         logger.info(f"开始处理文件: {input_file}")
 
-        with open(input_file, "r", encoding="utf-8") as infile:
-            reader = csv.reader(infile)
-            headers = next(reader, None)
-            if headers is None:
-                logger.warning(f"文件 {input_file} 是空的，无法处理。")
-                return
+        try:
+            with open(input_file, "r", encoding="utf-8") as infile:
+                reader = csv.reader(infile)
+                headers = next(reader, None)
+                if headers is None:
+                    logger.warning(f"文件 {input_file} 是空的，无法处理。")
+                    return
 
-            data_rows = [row for row in reader]
-            if not data_rows:
-                logger.warning(f"文件 {input_file} 没有数据行，无法处理。")
-                return
+                data_rows = [row for row in reader]
+                if not data_rows:
+                    logger.warning(f"文件 {input_file} 没有数据行，无法处理。")
+                    return
+
+        except FileNotFoundError:
+            logger.error(f"文件 {input_file} 不存在。")
+            return
+        except PermissionError:
+            logger.error(f"没有权限访问文件 {input_file}。")
+            return
+        except Exception as e:
+            logger.error(f"处理文件 {input_file} 时发生错误: {e}")
+            return
 
         data_rows = self.clean_data(data_rows)
         new_data = self.replace(headers, data_rows)
 
-        os.makedirs(os.path.dirname(output_file), exist_ok=True)
-        with open(output_file, "w", newline="", encoding="utf-8") as outfile:
-            writer = csv.writer(outfile, quoting=csv.QUOTE_ALL)
-            writer.writerow(headers)
-            writer.writerows(new_data)
-
-        logger.info(f"文件 {input_file} 处理完毕，保存到 {output_file}")
+        try:
+            os.makedirs(os.path.dirname(output_file), exist_ok=True)
+            with open(output_file, "w", newline="", encoding="utf-8") as outfile:
+                writer = csv.writer(outfile, quoting=csv.QUOTE_ALL)
+                writer.writerow(headers)
+                writer.writerows(new_data)
+            logger.info(f"文件 {input_file} 处理完毕，保存到 {output_file}")
+        except PermissionError:
+            logger.error(f"没有权限写入文件 {output_file}。")
+        except Exception as e:
+            logger.error(f"保存文件 {output_file} 时发生错误: {e}")
 
     def replace(self, headers, data_rows):
         replacements_count = 0
@@ -108,16 +123,19 @@ class CSVProcessor:
         # 返回处理过的data
         return [headers] + new_data_rows
 
-    def process_csv_folder(
-        self,
-        input_directory,
-        output_directory,
-    ):
-        for file in os.listdir(input_directory):
-            if file.endswith(".csv"):
-                input_file = os.path.join(input_directory, file)
-                output_file = os.path.join(output_directory, file)
-                self.process_csv_file(input_file, output_file)
+    def process_csv_folder(self, input_directory, output_directory):
+        try:
+            for file in os.listdir(input_directory):
+                if file.endswith(".csv"):
+                    input_file = os.path.join(input_directory, file)
+                    output_file = os.path.join(output_directory, file)
+                    self.process_csv_file(input_file, output_file)
+        except FileNotFoundError:
+            logger.error(f"目录 {input_directory} 不存在。")
+        except PermissionError:
+            logger.error(f"没有权限访问目录 {input_directory}。")
+        except Exception as e:
+            logger.error(f"处理目录 {input_directory} 时发生错误: {e}")
 
     def process_csv(self, input, output=None):
         # 备份原始文件

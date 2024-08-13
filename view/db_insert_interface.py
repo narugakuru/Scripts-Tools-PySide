@@ -4,7 +4,8 @@ from qfluentwidgets.components import dialog_box, FolderListDialog
 from PySide6.QtWidgets import QWidget, QFileDialog
 from utils.config_setup import ConfigManager
 from view.Ui_db_insert import Ui_DB_Insert
-from utils.db_insert_threading import CSVtoPostgresInserter
+from utils.db_insertor import CSVtoPostgresInserter
+from utils.logger_setup import get_clear_logs
 import logging
 import utils.logger_setup as log
 import threading
@@ -47,13 +48,15 @@ class DBInsertInterface(QWidget, Ui_DB_Insert):
     def insert_data(self):
         DBInsertor = CSVtoPostgresInserter()
         # 提交任务并获取 Future 对象
+        logger.info("CSV执行路径:" + self.csv_path)
         return DBInsertor.repalce_csv_insert2db(self.csv_path)
 
     def handle_result(self, future):
         try:
             result = future.result()  # 获取返回值
             if result:
-                self.TextEdit_Log.append("Data insertion completed successfully.")
+                self.TextEdit_Log.append(get_clear_logs())
+                self.TextEdit_Log.append("数据插入结束")
             else:
                 self.TextEdit_Log.append("Data insertion failed.")
         except Exception as e:

@@ -40,5 +40,6 @@ def clear_logs():
 
 def get_clear_logs():
     msg = get_logs()
+    print(msg)
     clear_logs()
     return msg
