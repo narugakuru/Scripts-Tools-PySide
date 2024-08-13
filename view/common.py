@@ -1,5 +1,6 @@
 from utils.logger_setup import get_clear_logs
-from utils import configManager
+
+# from backup import configManager
 from PySide6.QtWidgets import QWidget, QFileDialog
 from view.Ui_id_rules_replace import Ui_Id_Replace
 from utils.all_rule_replace import CSVProcessor

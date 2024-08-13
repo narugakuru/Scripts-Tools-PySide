@@ -1,4 +1,3 @@
-from ast import main
 from PySide6.QtWidgets import QApplication
 from PySide6.QtCore import Qt, QSize
 from PySide6.QtGui import QIcon
@@ -7,13 +6,11 @@ from utils import config_setup
 from view.calculator_interface import CalculatorInterface
 from view.id_rules_replace_interface import IdRulesReplaceInterface
 from view.db_insert_interface import DBInsertInterface
-from utils import configManager
 import logging
 
 # 设置日志配置
 logger = logging.getLogger("GlobalLogger")
-import sys
-import os
+import sys, os
 
 
 class MyWindow(SplitFluentWindow):

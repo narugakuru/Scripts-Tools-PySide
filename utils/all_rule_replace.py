@@ -13,7 +13,6 @@ class CSVProcessor:
     def __init__(self, add_value=int(0)):
         config = ConfigManager()
         self.start_values, self.cyclic_values = config.load_start_cyclic_values()
-
         self.add = config.config_data["add"]
 
     def generate_data(self, row_index, column_name):

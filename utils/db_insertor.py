@@ -10,9 +10,7 @@ from playhouse.shortcuts import (
 from utils.all_rule_replace import (
     CSVProcessor,
 )  # 从 utils 模块导入 CSVProcessor 类，用于处理 CSV 文件
-from utils.configManager import (
-    load_config,
-)  # 从 utils 模块导入 load_config 函数，用于加载配置文件
+from utils.config_setup import ConfigManager
 
 # 设置日志配置
 logger = logging.getLogger("GlobalLogger")  # 创建全局日志记录器

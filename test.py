@@ -1,4 +1,5 @@
-from utils import all_rule_replace, configManager
+from backup import configManager
+from utils import all_rule_replace
 from utils import *
 from view import *
 
