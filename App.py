@@ -25,12 +25,13 @@ class MyWindow(SplitFluentWindow):
         self.showMaximized()
 
         # self.calculatorInterface = CalculatorInterface()
+        # self.addSubInterface(self.calculatorInterface, FluentIcon.ACCEPT, "Calculator")
+
         self.idRulesReplaceInterface = IdRulesReplaceInterface()
         self.DBInsertInterface = DBInsertInterface()
         self.addSubInterface(
             self.idRulesReplaceInterface, FluentIcon.EDIT, "IdRulesReplace"
         )
-        # self.addSubInterface(self.calculatorInterface, FluentIcon.ACCEPT, "Calculator")
         self.addSubInterface(self.DBInsertInterface, FluentIcon.ADD_TO, "DBInsert")
 
     def set_window(self, ratio=1):

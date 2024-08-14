@@ -37,12 +37,19 @@ python -m nuitka --onefile --output-dir=app --mingw64 --lto=yes --standalone --e
 
 nuitka --standalone --remove-output --exclude-module=pandas.io.clipboard,pandas.plotting app.py
 
-python -m nuitka --onefile --output-dir=app --mingw64 --lto=yes --standalone --enable-plugin=pyside6 --show-progress --follow-imports --assume-yes-for-downloads --include-qt-plugins=sensible,qml,styles,sqldrivers app.py
+图标
+python -m nuitka --onefile --output-dir=app --mingw64 --lto=yes --enable-plugin=pyside6 --show-progress --follow-imports --assume-yes-for-downloads --include-qt-plugins=sensible,qml,styles,sqldrivers --windows-icon-from-ico=./resource/logo.png app.py
+
+无console，打包package
+python -m nuitka --onefile --output-dir=app --mingw64 --lto=yes --enable-plugin=pyside6 --show-progress --follow-imports --assume-yes-for-downloads --include-qt-plugins=sensible,qml,styles,sqldrivers --windows-icon-from-ico=./resource/logo.png app.py
+
+python -m nuitka --config-file=nuitka.cfg app.py
 
 
+--windows-disable-console
 --include-package-data=PySide6
 --follow-import-to=need
---include-qt-plugins=sensible
+--include-qt-plugins=sensible,qml,styles,sqldrivers
 --mingw64 #默认为已经安装的vs2017去编译，否则就按指定的比如mingw(官方建议)
 --standalone 独立环境，这是必须的(否则拷给别人无法使用)
 --windows-disable-console 没有CMD控制窗口
@@ -54,10 +61,10 @@ python -m nuitka --onefile --output-dir=app --mingw64 --lto=yes --standalone --e
 --plugin-enable=numpy 打包numpy,pandas,matplotlib模块的刚需
 --plugin-enable=torch 打包pytorch的刚需
 --plugin-enable=tensorflow 打包tensorflow的刚需
---windows-icon-from-ico=你的.ico 软件的图标
+--windows-icon-from-ico=./resource/logo.png
 --windows-company-name=Windows下软件公司信息
---windows-product-name=Windows下软件名称
---windows-file-version=Windows下软件的信息
+--windows-product-name=IT Tools
+--windows-file-version=V2.1
 --windows-product-version=Windows下软件的产品信息
 --windows-file-description=Windows下软件的作用描述
 --windows-uac-admin=Windows下用户可以使用管理员权限来安装

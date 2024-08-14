@@ -8,12 +8,18 @@ from qfluentwidgets.components import (
     FlyoutAnimationType,
     MessageBox,
 )
+from utils.config_setup import ConfigManager
+from PySide6.QtWidgets import (
+    QHeaderView,
+)
+from PySide6.QtSql import QSqlDatabase, QSqlRelationalTableModel, QSqlRelation
+
+
 from utils.all_rule_replace import CSVProcessor
 from utils.config_setup import ConfigManager
 import logging
 from PySide6.QtWidgets import QWidget
 from PySide6.QtSql import QSqlDatabase
-from view.common import bindDB
 
 # 设置日志配置
 logger = logging.getLogger("GlobalLogger")
@@ -31,11 +37,35 @@ class IdRulesReplaceInterface(QWidget, Ui_Id_Replace):
         self.PushButton_Select.clicked.connect(self.show_fileDialog)
         self.LineEdit_Path.setText(cfg["work_path"])
         self.PushButton_Replace.clicked.connect(self.csv_replace)
+        self.bindDB()
+
+    def bindDB(self):
         self.create_connection()
-        bindDB(self)
+        print("绑定数据库完成")
+        self.model_start = QSqlRelationalTableModel(self)
+        self.model_start.setTable("start_values")
+        self.model_start.select()
+
+        self.model_cyclic = QSqlRelationalTableModel(self)
+        self.model_cyclic.setTable("cyclic_values")
+        self.model_cyclic.select()
+
+        self.TableView_start.setModel(self.model_start)
+        self.TableView_cyclic.setModel(self.model_cyclic)
+
+        self.TableView_start.horizontalHeader().setSectionResizeMode(
+            QHeaderView.ResizeToContents
+        )
+        self.TableView_start.horizontalHeader().setStretchLastSection(True)
+        self.TableView_cyclic.horizontalHeader().setSectionResizeMode(
+            QHeaderView.ResizeToContents
+        )
+        self.TableView_cyclic.horizontalHeader().setStretchLastSection(True)
 
     def create_connection(self):
         print("create_connection")
+        if QSqlDatabase.contains("QSQLITE"):
+            QSqlDatabase.removeDatabase("QSQLITE")
         self.db = QSqlDatabase.addDatabase("QSQLITE")
         self.db.setDatabaseName(ConfigManager().SQLITE_DB_PATH)
         if not self.db.open():
