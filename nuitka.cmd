@@ -41,9 +41,12 @@ nuitka --standalone --remove-output --exclude-module=pandas.io.clipboard,pandas.
 python -m nuitka --onefile --output-dir=app --mingw64 --lto=yes --enable-plugin=pyside6 --show-progress --follow-imports --assume-yes-for-downloads --include-qt-plugins=sensible,qml,styles,sqldrivers --windows-icon-from-ico=./resource/logo.png app.py
 
 无console，打包package
-python -m nuitka --onefile --output-dir=app --mingw64 --lto=yes --enable-plugin=pyside6 --show-progress --follow-imports --assume-yes-for-downloads --include-qt-plugins=sensible,qml,styles,sqldrivers --windows-icon-from-ico=./resource/logo.png app.py
+python -m nuitka --company-name=COMPANY_NAME --onefile --output-dir=app --mingw64 --lto=yes --enable-plugin=pyside6 --show-progress --follow-imports --assume-yes-for-downloads --include-qt-plugins=sensible,qml,styles,sqldrivers --windows-icon-from-ico=./resource/logo.png app.py
 
 python -m nuitka --config-file=nuitka.cfg app.py
+
+添加信息
+python -m nuitka --onefile --output-dir=app --mingw64 --lto=yes --enable-plugin=pyside6 --show-progress --show-memory --follow-imports --assume-yes-for-downloads --include-qt-plugins=sensible,qml,styles,sqldrivers --windows-icon-from-ico=.\resource\logo.png --company-name="小岚岚有限公司" --product-name="IT Tools" --file-version=2.3.0.0 --product-version=2.3.0.0 --file-description="IT Tools by 小岚岚 hikari021004@gmail.com" --copyright="© 2024 Hikari" --trademarks="Hikari Trademark" --nofollow-import-to=numpy app.py
 
 
 --windows-disable-console
@@ -63,10 +66,6 @@ python -m nuitka --config-file=nuitka.cfg app.py
 --plugin-enable=tensorflow 打包tensorflow的刚需
 --windows-icon-from-ico=./resource/logo.png
 --windows-company-name=Windows下软件公司信息
---windows-product-name=IT Tools
---windows-file-version=V2.1
---windows-product-version=Windows下软件的产品信息
---windows-file-description=Windows下软件的作用描述
 --windows-uac-admin=Windows下用户可以使用管理员权限来安装
 --linux-onefile-icon=Linux下的图标位置
 --onefile 像pyinstaller一样打包成单个exe文件(2021年我会再出教程来解释)

@@ -4,7 +4,6 @@ from PySide6.QtGui import QIcon
 from qfluentwidgets import SplitFluentWindow, FluentIcon
 from utils import config_setup
 
-# from view.calculator_interface import CalculatorInterface
 from view.id_rules_replace_interface import IdRulesReplaceInterface
 from view.db_insert_interface import DBInsertInterface
 import logging
@@ -24,9 +23,6 @@ class MyWindow(SplitFluentWindow):
         # self.set_window()
         self.showMaximized()
 
-        # self.calculatorInterface = CalculatorInterface()
-        # self.addSubInterface(self.calculatorInterface, FluentIcon.ACCEPT, "Calculator")
-
         self.idRulesReplaceInterface = IdRulesReplaceInterface()
         self.DBInsertInterface = DBInsertInterface()
         self.addSubInterface(
@@ -34,7 +30,7 @@ class MyWindow(SplitFluentWindow):
         )
         self.addSubInterface(self.DBInsertInterface, FluentIcon.ADD_TO, "DBInsert")
 
-    def set_window(self, ratio=1):
+    def set_window(self, ratio=0.6):
         # 获取屏幕大小
         screen = QApplication.primaryScreen()
 

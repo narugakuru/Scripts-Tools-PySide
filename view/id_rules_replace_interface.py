@@ -24,6 +24,9 @@ from PySide6.QtSql import QSqlDatabase
 # 设置日志配置
 logger = logging.getLogger("GlobalLogger")
 
+from PySide6.QtWidgets import QPushButton, QVBoxLayout
+from view.Ui_add_new_row import Ui_Dialog_AddNewRow
+
 
 class IdRulesReplaceInterface(QWidget, Ui_Id_Replace):
 
@@ -31,6 +34,11 @@ class IdRulesReplaceInterface(QWidget, Ui_Id_Replace):
         super().__init__()
         self.setupUi(self)
         self.log_text = ""
+
+        self.dialog_add_new_row = Ui_Dialog_AddNewRow()
+        self.dialog_add_new_row.setupUi(self.dialog_add_new_row)
+        self.PushButton_Add.clicked.connect(self.show_add_new_row)
+
         self.configManager = ConfigManager()
         cfg = self.configManager.config_data
         self.csvProcessor = CSVProcessor()
@@ -43,10 +51,12 @@ class IdRulesReplaceInterface(QWidget, Ui_Id_Replace):
         self.create_connection()
         print("绑定数据库完成")
         self.model_start = QSqlRelationalTableModel(self)
+        self.model_start.setEditStrategy(QSqlRelationalTableModel.OnFieldChange)
         self.model_start.setTable("start_values")
         self.model_start.select()
 
         self.model_cyclic = QSqlRelationalTableModel(self)
+        self.model_cyclic.setEditStrategy(QSqlRelationalTableModel.OnFieldChange)
         self.model_cyclic.setTable("cyclic_values")
         self.model_cyclic.select()
 
@@ -104,3 +114,23 @@ class IdRulesReplaceInterface(QWidget, Ui_Id_Replace):
         folder_path = QFileDialog.getExistingDirectory(self, "选择文件夹", "")
         if folder_path:
             self.LineEdit_Path.setText(folder_path)
+
+    def add_new_row(self):
+        # Add a new row to the 'start_values' model
+        row = self.model_start.rowCount()
+        self.model_start.insertRow(row)
+        # Optionally, set initial values for the new row here
+        self.model_start.submitAll()
+        # Log the action
+        logger.info(f"New row added at index {row} in start_values table")
+
+    def show_add_new_row(self):
+        self.dialog_add_new_row.exec()
+        # data1, data2 = dialog.get_data()
+        # new_record = self.model.record()
+        # new_record.setValue("column1", data1)
+        # new_record.setValue("column2", data2)
+        # if not self.model.insertRecord(-1, new_record):
+        #     QMessageBox.critical(self, "错误", "无法新增数据。")
+        # else:
+        #     self.model.submitAll()  # 提交更改

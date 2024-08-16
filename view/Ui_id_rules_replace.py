@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'id_rules_replace.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.7.2
+## Created by: Qt User Interface Compiler version 6.6.2
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -63,6 +63,11 @@ class Ui_Id_Replace(object):
 
         self.verticalLayout.addWidget(self.TableView_cyclic)
 
+        self.PushButton_Add = PushButton(Id_Replace)
+        self.PushButton_Add.setObjectName(u"PushButton_Add")
+
+        self.verticalLayout.addWidget(self.PushButton_Add)
+
 
         self.verticalLayout_2.addLayout(self.verticalLayout)
 
@@ -97,6 +102,7 @@ class Ui_Id_Replace(object):
 
     def retranslateUi(self, Id_Replace):
         Id_Replace.setWindowTitle(QCoreApplication.translate("Id_Replace", u"Form", None))
+        self.PushButton_Add.setText(QCoreApplication.translate("Id_Replace", u"\u65b0\u589e\u6570\u636e", None))
         self.PushButton_Select.setText(QCoreApplication.translate("Id_Replace", u"\u9009\u62e9\u6587\u4ef6\u5939", None))
         self.PushButton_Replace.setText(QCoreApplication.translate("Id_Replace", u"\u66ff\u6362", None))
     # retranslateUi

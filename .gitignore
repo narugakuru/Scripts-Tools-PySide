@@ -10,6 +10,8 @@ app.onefile-build
 app
 dist
 build
+build.bat
+nuitka.cmd
 
 # 数据包
 *.rar

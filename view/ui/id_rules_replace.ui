@@ -87,6 +87,13 @@
          </attribute>
         </widget>
        </item>
+       <item>
+        <widget class="PushButton" name="PushButton_Add">
+         <property name="text">
+          <string>新增数据</string>
+         </property>
+        </widget>
+       </item>
       </layout>
      </item>
      <item>
