@@ -30,24 +30,17 @@ def setup_logging(log_file_path):
     # 确保日志文件实时写入
     file_handler.flush = file_handler.stream.flush
 
-def print_progress(total_files, copied_files):
-    # 动态更新控制台显示，不换行，用 \r 使得光标返回行首并覆盖前面的内容
-    sys.stdout.write(f'\rTotal files processed: {total_files}, Files copied: {copied_files}')
-    sys.stdout.flush()
-
-def copy_folders_with_exclusion_and_time_check(origin_path, copy_path, exclude_exts, exclude_dirs, all_copy):
-    total_files = 0  # 遍历的文件总数
-    copied_files = 0  # 实际复制的文件数
-    log_interval = 500  # 每 500 次进行一次日志记录
+# 通用文件复制逻辑
+def copy_files(origin_path, copy_path, exclude_exts, exclude_dirs, include_dirs, all_copy, filter_func):
+    
     # 创建一个进度条用于遍历文件
     traversal_pbar = tqdm(desc="Traversing Files", unit="files", position=0)
     # 创建另一个进度条用于处理文件
     processing_pbar = tqdm(desc="Processing Files", unit="files", position=1)
-    
 
     for root, dirs, files in os.walk(origin_path):
-        # 忽略指定的文件夹 (在遍历子目录之前从 dirs 列表中移除)
-        dirs[:] = [d for d in dirs if d not in exclude_dirs]
+        # 过滤文件夹
+        dirs[:] = filter_func(dirs, exclude_dirs, include_dirs)
 
         # 构建目标路径
         relative_path = os.path.relpath(root, origin_path)
@@ -59,7 +52,7 @@ def copy_folders_with_exclusion_and_time_check(origin_path, copy_path, exclude_e
 
         # 复制文件，排除指定扩展名的文件
         for file in files:
-            total_files += 1  # 统计遍历的文件总数
+            
             traversal_pbar.update(1)  # 每处理一个文件更新一次进度条
             if not any(file.lower().endswith(ext) for ext in exclude_exts):
                 source_file = os.path.join(root, file)
@@ -68,21 +61,32 @@ def copy_folders_with_exclusion_and_time_check(origin_path, copy_path, exclude_e
                 if should_copy(source_file, target_file) or all_copy:
                     # all_copy=True 直接执行更新
                     shutil.copy2(source_file, target_file)
-                    copied_files += 1  # 统计实际复制的文件数
+                    
                     processing_pbar.update(1)
                     logging.info(f'Copied: {source_file} to {target_file}')  # 记录日志
 
-            # 实时更新控制台的文件计数
-            # print_progress(total_files, copied_files)
-            
-            # 如果到达500个文件的整数倍，输出日志
-            if total_files % log_interval == 0:
-                logging.info(f'Total files processed: {total_files}, Files copied: {copied_files}')
 
-    # 最后输出一次日志
-    logging.info(f'Final file count: Total files processed: {total_files}, Files copied: {copied_files}')
-    # 清除进度条行，避免最后遗留多余信息
-    print("\nDone.")
+        # 获取最终结果并输出
+        traversed_files = traversal_pbar.format_dict['n']
+        processed_files = processing_pbar.format_dict['n']
+        logging.info(f'{dirs}: Total files processed: {traversed_files}, Files copied: {processed_files}')
+
+
+
+# 复制所有文件，排除指定的目录
+def copy_folders_with_exclusion(origin_path, copy_path, exclude_exts, exclude_dirs, all_copy):
+    def filter_func(dirs, exclude_dirs, include_dirs):
+        return [d for d in dirs if d not in exclude_dirs]
+    
+    copy_files(origin_path, copy_path, exclude_exts, exclude_dirs, None, all_copy, filter_func)
+
+# 仅复制包含在 include_dirs 中的目录的文件
+def copy_folders_with_inclusion(origin_path, copy_path, exclude_exts, include_dirs, all_copy):
+    def filter_func(dirs, exclude_dirs, include_dirs):
+        # 仅保留 include_dirs 中的文件夹
+        return [d for d in dirs if d in include_dirs]
+    
+    copy_files(origin_path, copy_path, exclude_exts, None, include_dirs, all_copy, filter_func)
 
 def should_copy(source_file, target_file):
     # 如果目标文件不存在，直接复制
@@ -96,7 +100,6 @@ def should_copy(source_file, target_file):
     # 如果源文件的修改时间比目标文件新，则复制
     return source_mtime > target_mtime
 
-
 if __name__ == "__main__":
     origin_path = r"Z:\ssl-htdocs"  # 源文件夹路径
     copy_path = r"E:\WorkSpace\WebKaisyu\ssl-htdocs-local"  # 目标文件夹路径
@@ -109,5 +112,10 @@ if __name__ == "__main__":
 
     exclude_exts = ['.pdf', '.PDF']  # 排除的文件扩展名
     exclude_dirs = ['.git', 'pdf']  # 排除的文件夹
+    include_dirs = ['recruit']  # 仅包含的文件夹
 
-    copy_folders_with_exclusion_and_time_check(origin_path, copy_path, exclude_exts, exclude_dirs, all_copy)
+    # 使用排除目录方式
+    copy_folders_with_exclusion(origin_path, copy_path, exclude_exts, exclude_dirs, all_copy)
+
+    # 使用包含目录方式
+    # copy_folders_with_inclusion(origin_path, copy_path, exclude_exts, include_dirs, all_copy)

@@ -1,39 +1,20 @@
 # 批量复制文件列表，包括文件夹结构
 import os
 import shutil
+import tqdm
 
 origin_path = r"Z:\ssl-htdocs"
-copy_path = r"E:\WorkSpace\WebKaisyu\html_1014"
+copy_path = r"E:\WorkSpace\WebKaisyu\html_1016_1"
 
 # String of file paths (could be from a file or input)
-raw_file_paths = """
-/info/public/demand.html
-/info/personal/index.html
-/info/personal/stop1.html
-/info/personal/demand.html
-/info/personal/note1.html
-/info/personal/stop2.html
-/info/personal/note3.html
-/pr/newPublic.html
-/pr/study/index.html
-/effort/standard.html
-/form/opinion/index.html
-/general/accessibility_result.html
-/report/new/index.html
-/pr/kensa/result/5.html
-/report/zuiji/24.html
-/report/zuiji/23.html
-/report/zuiji/22.html
-/report/demand/index.html
-/proc/info/consult/order/06.html
-/proc/info/consult/order/05.html
-/proc/info/consult/sikaku/r05_06.html
-/proc/info/item/index.html
-/proc/info/item/order/06.html
-/proc/result/consult/index.html
-/proc/result/consult/public/06.html
-/proc/result/item/index.html
-/info/public/index.html
+raw_file_paths = r"""
+recruit/msg01.html
+recruit/way.html
+recruit/carrerPath.html
+recruit/training.html
+recruit/other.html
+common\template\footer.php
+common2/tmp/footer.php
 """
 
 # Function to normalize paths
@@ -53,9 +34,11 @@ def normalize_paths(raw_paths):
 # Function to copy files and recreate folder structure
 def copy_files_with_structure(origin_path, copy_path, file_paths):
     
+    print(f'copy folder from {origin_path} to {copy_path}')
+    
     os.makedirs(os.path.dirname(copy_path), exist_ok=True)
     
-    for file in file_paths:
+    for file in tqdm.tqdm(file_paths):
         # Remove leading '/' to avoid issues with os.path.join
         file = file.lstrip('/')
         
@@ -72,9 +55,9 @@ def copy_files_with_structure(origin_path, copy_path, file_paths):
             
             # Copy the file to the target location
             shutil.copy2(source, target)
-            print(f"Copied: {source} -> {target}")
+            print(f"\nCopied: {source} -> {target}")
         else:
-            print(f"Skipped: {source} (Not a file)")
+            print(f"\nSkipped: {source} (Not a file)")
 
 
 # Normalize the file paths
